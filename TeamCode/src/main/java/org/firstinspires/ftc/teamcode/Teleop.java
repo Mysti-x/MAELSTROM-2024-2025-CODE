@@ -16,7 +16,8 @@ public class Teleop extends OpMode {
     private Servo servomover;
     private Servo clawmover;
     private Servo claw;
-
+    private Servo extendo;
+    private DcMotorEx intakeMotor;
     // State variables for servos
     private boolean aButtonPressed = false;
     private boolean servoPosition = false;
@@ -40,10 +41,13 @@ public class Teleop extends OpMode {
         liftMotor1.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
+        //
+
         // Initialize servos
         servomover = hardwareMap.get(Servo.class, "servomover");
         clawmover = hardwareMap.get(Servo.class, "clawmover");
         claw = hardwareMap.get(Servo.class, "claw");
+        extendo  =hardwareMap.get(Servo.class, "extendo");
 
         // Initialize PID controller
         liftPIDController = new SimplePIDController(0.002, 0.000, 0.00001);
@@ -118,6 +122,11 @@ public class Teleop extends OpMode {
      * Handles lift motor control using gamepad2 bumpers.
      */
     private void handleLiftControl() {
+        if (gamepad2.right_trigger)
+        {
+
+        }
+
         if (gamepad2.right_bumper)
         {
             liftPIDController.setTargetPosition(0);

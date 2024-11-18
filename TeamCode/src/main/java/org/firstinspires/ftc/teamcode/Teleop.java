@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import com.acmerobotics.roadrunner.Pose2d;
@@ -18,6 +19,7 @@ public class Teleop extends OpMode {
     private Servo claw;
     private Servo extendo;
     private DcMotorEx intakeMotor;
+    //private DcMotorEx armMotor; // this is if we end up switching to A motor for arm
     // State variables for servos
     private boolean aButtonPressed = false;
     private boolean servoPosition = false;
@@ -41,13 +43,17 @@ public class Teleop extends OpMode {
         liftMotor1.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor1.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        //
+
+        //Initialize Motor for Intake( No need for Encoders)
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
 
         // Initialize servos
         servomover = hardwareMap.get(Servo.class, "servomover");
         clawmover = hardwareMap.get(Servo.class, "clawmover");
         claw = hardwareMap.get(Servo.class, "claw");
-        extendo  =hardwareMap.get(Servo.class, "extendo");
+        extendo  = hardwareMap.get(Servo.class, "extendo");
 
         // Initialize PID controller
         liftPIDController = new SimplePIDController(0.002, 0.000, 0.00001);
@@ -95,16 +101,30 @@ public class Teleop extends OpMode {
     private void handleServoToggle() {
         if (gamepad2.a && !aButtonPressed) {
             toggleServo(servomover, 0.3);
-        } else if (gamepad2.x && !aButtonPressed) {
+            aButtonPressed = true;
+        }
+        //if (gamepad2.right_trigger && !aButtonPressed) {
+            //toggleServo(servomover, 0.3);
+            //aButtonPressed = true;
+        //}
+        if (gamepad2.x && !aButtonPressed) {
             toggleServo(servomover, 0.38);
-        } else if (gamepad2.b && !aButtonPressed) {
+            aButtonPressed = true;
+        }
+        if (gamepad2.b && !aButtonPressed) {
             toggleServo(clawmover, 0.35);
-        } else if (gamepad2.y && !aButtonPressed) {
+            aButtonPressed = true;
+        }
+        if (gamepad2.y && !aButtonPressed) {
             toggleServo(claw, 0.3);
-        } else if (!gamepad2.a && !gamepad2.x && !gamepad2.b && !gamepad2.y) {
-            aButtonPressed = false; // Reset button state when no relevant button is pressed
+            aButtonPressed = true;
+        }
+        // Reset button state when no buttons are pressed
+        if (!gamepad2.a && !gamepad2.x && !gamepad2.b && !gamepad2.y) {
+            aButtonPressed = false;
         }
     }
+
 
     /**
      * Toggles a servo position between two states.
@@ -122,10 +142,17 @@ public class Teleop extends OpMode {
      * Handles lift motor control using gamepad2 bumpers.
      */
     private void handleLiftControl() {
-        if (gamepad2.right_trigger)
-        {
-
+        if (gamepad2.right_trigger > 0) { // Check if the right trigger is pressed
+            extendo.setPosition(1);
+            intakeMotor.setPower(1); // Run the motor at full power
+        } else {
+            intakeMotor.setPower(0);
+            extendo.setPosition(0); // Stop the motor when the trigger is not pressed
         }
+
+
+
+
 
         if (gamepad2.right_bumper)
         {

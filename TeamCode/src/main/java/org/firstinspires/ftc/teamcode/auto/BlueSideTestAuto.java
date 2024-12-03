@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.auto;
+
 import com.acmerobotics.roadrunner.ParallelAction;
 import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
@@ -109,7 +110,7 @@ public class BlueSideTestAuto extends LinearOpMode {
             }
         }
 
-        public Action openClaw() {
+        public Action openClaw() { // Fixed method
             return new OpenClaw();
         }
     }
@@ -117,7 +118,7 @@ public class BlueSideTestAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Set the initial position and heading of the robot
-        Pose2d initialPose = new Pose2d(11.8, 61.7, Math.toRadians(90));
+        Pose2d initialPose = new Pose2d(-60, -60, Math.toRadians(90));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
         Claw claw = new Claw(hardwareMap);
         Lift lift = new Lift(hardwareMap);
@@ -125,7 +126,6 @@ public class BlueSideTestAuto extends LinearOpMode {
         // Define the trajectory action
         Action trajectoryAction = drive.actionBuilder(initialPose)
                 .strafeTo(new Vector2d(44.5, 30))  // Move to a specific position
-
                 .turn(Math.toRadians(180))        // Turn the robot 180 degrees
                 .strafeTo(new Vector2d(48, 12))   // Move to another position
                 .build();
@@ -141,13 +141,11 @@ public class BlueSideTestAuto extends LinearOpMode {
         // Execute the trajectory with parallel actions
         Actions.runBlocking(
                 new SequentialAction(
-
+                        trajectoryAction,
                         lift.liftUp(),
-                        claw.openClaw(),
+                        claw.openClaw(), // This now works as expected
                         lift.liftDown()
-
                 )
         );
     }
 }
-

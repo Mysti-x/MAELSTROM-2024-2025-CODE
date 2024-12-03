@@ -30,7 +30,7 @@ public class Teleop extends OpMode {
     private static final double FEEDFORWARD_DOWN = 0.0002;
     private static final double TARGET_POSITION_INCREMENT = 8;
     private double targetPosition = 0;
-    private static final double MAX_POSITION = 3700;
+    private static final double MAX_POSITION = 3700;//0 -4000
 
     // Mecanum Drive
     private MecanumDrive drive;
@@ -123,6 +123,9 @@ public class Teleop extends OpMode {
         if (!gamepad2.a && !gamepad2.x && !gamepad2.b && !gamepad2.y) {
             aButtonPressed = false;
         }
+        //if (!gamepad2.a && !gamepad2.x && !gamepad2.b && !gamepad2.y) {
+            //aButtonPressed = false;
+        //}
     }
 
 
@@ -179,6 +182,12 @@ public class Teleop extends OpMode {
             //code for height of top bar for specimen
 
         }
+        //if (gamepad2.dpad_down)
+        //{
+            //liftPIDController.setTargetPosition();
+        //}
+
+
         if (gamepad2.left_bumper)
         {
             liftPIDController.setTargetPosition(450.00);
@@ -263,6 +272,7 @@ public class Teleop extends OpMode {
             telemetry.addData("Lift Motor Power", liftMotor1.getPower());
             telemetry.addData("Servo Position", servomover.getPosition());
             telemetry.addData("Lift power", liftMotor1.getPower());
+            telemetry.addData("Claw mover position", clawmover.getPosition());
             telemetry.update();
         }
 }

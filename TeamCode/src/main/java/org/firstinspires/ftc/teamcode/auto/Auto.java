@@ -35,7 +35,7 @@ public class Auto extends LinearOpMode {
             liftMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        public class UpperGoalPosition implements Action {
+        public class UpperPolePosition implements Action {
             private boolean initialized = false;
 
             @Override
@@ -57,11 +57,11 @@ public class Auto extends LinearOpMode {
             }
         }
 
-        public Action liftUpperGoalPosition() {
-            return new UpperGoalPosition();
+        public Action liftUpperPolePosition() {
+            return new UpperPolePosition();
         }
 
-        public class LowerStoredPosition implements Action {
+        public class LowerPolePosition implements Action {
             private boolean initialized = false;
 
             @Override
@@ -83,14 +83,14 @@ public class Auto extends LinearOpMode {
             }
         }
 
-        public Action lowerStoredPosition() {
-            return new LowerStoredPosition();
+        public Action lowerPolePosition() {
+            return new LowerPolePosition();
         }
     }
 
     @Override
     public void runOpMode() {
-        Pose2d initalPose = new Pose2d(0, 0, Math.toRadians(0));
+        Pose2d initalPose = new Pose2d(0, 0, Math.toRadians(0));//INTIALL POSTION
         MecanumDrive drive = new MecanumDrive(hardwareMap, initalPose);
         Lift lift = new Lift(hardwareMap);
 
@@ -106,9 +106,10 @@ public class Auto extends LinearOpMode {
                 .lineToX(47.5)
                 .waitSeconds(3);
 
+
         Actions.runBlocking(new SequentialAction(
-                tab1.build(),
-                lift.liftUpperGoalPosition()
+                tab1.build()
+                //lift.liftUpperGoalPosition()
         ));
     }
 }

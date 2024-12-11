@@ -84,10 +84,10 @@ public class Teleop extends OpMode {
     @Override
     public void start() {
         claw.setPosition(0);
-        ex.setPosition(0);
-        ex1.setPosition(1);
-        intakeMover1.setPosition(1);
-        intakeMover.setPosition(1);
+        //ex.setPosition(0);
+        //ex1.setPosition(1);
+        intakeMover1.setPosition(0.7);
+        intakeMover.setPosition(0.7);
         bucketFlipper1.setPosition(0);
     }
 
@@ -124,10 +124,10 @@ public class Teleop extends OpMode {
         // Toggle intakeMover and intakeMover1 with gamepad2.a
         if (gamepad2.a && !aButtonPressed) {
             intakeMoverState = !intakeMoverState;
-            intakeMover.setPosition(intakeMoverState ? 1.0 : 0.0);
+            intakeMover.setPosition(intakeMoverState ? 1.0 : 0.18);
 
             intakeMover1State = !intakeMover1State;
-            intakeMover1.setPosition(intakeMover1State ? 1.0 : 0.0);
+            intakeMover1.setPosition(intakeMover1State ? 1.0 : 0.18 );
 
             aButtonPressed = true;
         }
@@ -136,9 +136,9 @@ public class Teleop extends OpMode {
         // Toggle ex and ex1 with gamepad2.b
         if (gamepad2.b && !bButtonPressed) {
             exState = !exState;
-            ex.setPosition(exState ? 0.35 : 0.2);
+            ex.setPosition(exState ? 0.12 : 0.);
             ex1State = !ex1State;
-            ex1.setPosition(ex1State ? 0.45 : 1.0);
+            ex1.setPosition(ex1State ? 0.88 : 1.0 );
 
             bButtonPressed = true;
         }
@@ -175,8 +175,8 @@ public class Teleop extends OpMode {
                 sleep(500); // Allow time for forward motion (500ms)
 
                 // Reverse intakeCRServo
-                intakeCRServo.setPower(-1.0);
-                sleep(500); // Allow time for reverse motion (500ms)
+                //intakeCRServo.setPower(-1.0);
+                //sleep(500); // Allow time for reverse motion (500ms)
 
                 // Stop intakeCRServo
                 intakeCRServo.setPower(0.0);
@@ -201,25 +201,126 @@ public class Teleop extends OpMode {
     }
 
     private void handleLiftControl() {
-        // Your existing lift control logic remains unchanged
-        double currentPosition = liftMotor1.getCurrentPosition();
-        double pidOutput = liftPIDController.update(currentPosition);
-        double feedforward = (currentPosition < targetPosition) ? FEEDFORWARD_UP : FEEDFORWARD_DOWN;
+        if (gamepad2.right_trigger > 0) { // Check if the right trigger is pressed
+            //extendo.setPosition(1);
+            //intakeMotor.setPower(1); // Run the motor at full power
+        } else {
+            // intakeMotor.setPower(0);
+            //extendo.setPosition(0); // Stop the motor when the trigger is not pressed
+        }
 
-        liftMotor1.setPower(pidOutput + feedforward);
-    }
 
-    private void updateTelemetry() {
-        telemetry.addData("Intake Mover State", intakeMoverState);
-        telemetry.addData("Intake Mover 1 State", intakeMover1State);
-        telemetry.addData("Ex State", exState);
-        telemetry.addData("Ex 1 State", ex1State);
-        telemetry.addData("Intake CR Servo State", intakeCRServoState);
-        telemetry.addData("Lift Current Position", liftMotor1.getCurrentPosition());
-        telemetry.addData("Target Position", targetPosition);
-        telemetry.addData("Lift Motor Power", liftMotor1.getPower());
-        telemetry.update();
+        if (gamepad2.right_bumper) {
+            liftPIDController.setTargetPosition(0);
+
+            //code for zero postion, so when the viper is all the way down
+        }
+
+        if (gamepad2.dpad_left) {
+            liftPIDController.setTargetPosition(3900);
+            //code for top basket
+        }
+        if (gamepad2.dpad_right) {
+            liftPIDController.setTargetPosition(400);
+
+            //code  to take specimen from wall
+        }
+
+        if (gamepad2.dpad_up) {
+            liftPIDController.setTargetPosition(2350.00);
+            //code for height of top bar for specimen
+
+        }
+        //if (gamepad2.dpad_down)
+        //{
+        //liftPIDController.setTargetPosition();
+        //}
+
+
+        if (gamepad2.left_bumper) {
+            liftPIDController.setTargetPosition(450.00);
+            //code for height of top bar for specimen
+
+        }
+        //if (gamepad2.dpad_down)
+        //{
+        // liftPIDController.setTargetPosition(2000.00);  // Set the target position
+
+        //ElapsedTime timer = new ElapsedTime();
+        //timer.reset();
+
+        // Step 1: Move the servo first
+        //toggleServo(clawmover, 0.15);  // Move the servo first
+        //clawmover.setPosition(0.15);
+
+        //while (timer.seconds() < 0.3) {
+        //}  // Wait for 0.3 seconds
+
+        // Step 2: Move the lift motor using PID control
+        //while (Math.abs(liftMotor1.getCurrentPosition() - liftPIDController.getTargetPosition()) > 10) {  // Tolerance of 10 ticks
+        //double pidOutput = liftPIDController.update(liftMotor1.getCurrentPosition());  // Get PID output
+
+        // Debugging telemetry
+        //telemetry.addData("Lift Current Position", liftMotor1.getCurrentPosition());
+        //telemetry.addData("PID Output", pidOutput);
+        //telemetry.addData("Target Position", liftPIDController.getTargetPosition());
+        ///telemetry.update();
+
+        // Apply the PID output to the motor power
+        // Ensure the motor gets a minimum power if PID output is too low
+        //double motorPower = Math.max(pidOutput, -0.2); // Ensure at least 20% power to move the motor
+        //liftMotor1.setPower(motorPower);
+        //}
+
+        // After lift motor reaches target, stop the motor
+        //liftMotor1.setPower(0);
+
+        // Step 3: Run the robot for 0.5 seconds
+        //timer.reset();
+        //while (timer.seconds() < 0.0)
+        //{
+        //MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+
+        // Set the drive powers to move backward at maximum speed
+        //drive.setDrivePowers(new PoseVelocity2d(
+        //new Vector2d(0.0, 0), // Move backward at 100% power
+        //0 // No rotational movement
+        //));
+
+        //drive.updatePoseEstimate();
+        //}
+
+        // Step 4: Stop the robot after the movement
+        //MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        //drive.setDrivePowers(new PoseVelocity2d(
+        //new Vector2d(0, 0), // Stop all movement
+        // 0
+        //));
+
+        // Step 5: Toggle the claw after the robot has stopped
+        //toggleServo(claw, 0);
+        //liftPIDController.setTargetPosition(0);
+        // }
+
+
+        //double currentPosition = liftMotor1.getCurrentPosition();
+        //double pidOutput = liftPIDController.update(currentPosition);
+        //double feedforward = (currentPosition < targetPosition) ? FEEDFORWARD_UP : FEEDFORWARD_DOWN;
+
+        //liftMotor1.setPower(pidOutput + feedforward);
+        //}
     }
+        private void updateTelemetry () {
+            telemetry.addData("Intake Mover State", intakeMoverState);
+            telemetry.addData("Intake Mover 1 State", intakeMover1State);
+            telemetry.addData("Ex State", exState);
+            telemetry.addData("Ex 1 State", ex1State);
+            telemetry.addData("Intake CR Servo State", intakeCRServoState);
+            telemetry.addData("Lift Current Position", liftMotor1.getCurrentPosition());
+            telemetry.addData("Target Position", targetPosition);
+            telemetry.addData("Lift Motor Power", liftMotor1.getPower());
+            telemetry.update();
+        }
 
     private void sleep(long milliseconds) {
         try {

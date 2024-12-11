@@ -128,6 +128,7 @@ public class BlueSideTestAuto extends LinearOpMode {
                 .strafeTo(new Vector2d(44.5, 30))  // Move to a specific position
                 .turn(Math.toRadians(180))        // Turn the robot 180 degrees
                 .strafeTo(new Vector2d(48, 12))   // Move to another position
+                //.linetoY      ///need to test how this works, idk how it works.
                 .build();
 
         // Close the claw at the start of the OpMode
